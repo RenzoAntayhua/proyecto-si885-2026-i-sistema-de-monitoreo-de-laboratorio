@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+sqlalchemy
+asyncpg
+psycopg2-binary
+opensearch-py
+python-dotenv
+pydantic
+requests==2.31.0
+maxminddb

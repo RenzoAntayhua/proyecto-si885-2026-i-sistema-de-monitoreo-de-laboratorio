@@ -1,0 +1,124 @@
+<Window x:Class="NetworkMonitorInstaller.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="NetMonitor - Instalador de Agentes"
+        Height="620" Width="560"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize"
+        Background="#0F172A">
+
+    <Window.Resources>
+        <!-- Estilo para botón primario -->
+        <Style x:Key="BtnPrimary" TargetType="Button">
+            <Setter Property="Background" Value="#06B6D4"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#0891B2"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#334155"/>
+                    <Setter Property="Foreground" Value="#64748B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,24">
+            <TextBlock Text="🛡️ NetMonitor Installer"
+                       Foreground="White" FontSize="22" FontWeight="Bold"/>
+            <TextBlock Text="Instalador de Sysmon + Wazuh Agent para laboratorios"
+                       Foreground="#94A3B8" FontSize="13" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <!-- URL de la API -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,16">
+            <TextBlock Text="URL del Servidor (API)" Foreground="#CBD5E1"
+                       FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+            <TextBox x:Name="TxtApiUrl"
+                     Text="http://20.69.247.26:8000"
+                     Background="#1E293B" Foreground="White" FontSize="14"
+                     Padding="12,10" BorderBrush="#334155" BorderThickness="1"
+                     CaretBrush="White"/>
+        </StackPanel>
+
+        <!-- IP del VPS (Wazuh Manager) -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,16">
+            <TextBlock Text="IP del VPS (Wazuh Manager)" Foreground="#CBD5E1"
+                       FontSize="13" FontWeight="Medium" Margin="0,0,0,6"/>
+            <TextBox x:Name="TxtVpsIp"
+                     Text="20.69.247.26"
+                     Background="#1E293B" Foreground="White" FontSize="14"
+                     Padding="12,10" BorderBrush="#334155" BorderThickness="1"
+                     CaretBrush="White"/>
+        </StackPanel>
+
+        <!-- Selector de Laboratorio -->
+        <StackPanel Grid.Row="3" Margin="0,0,0,16">
+            <DockPanel Margin="0,0,0,6">
+                <TextBlock Text="Laboratorio" Foreground="#CBD5E1"
+                           FontSize="13" FontWeight="Medium"/>
+                <Button x:Name="BtnRefreshLabs" Content="🔄 Cargar"
+                        DockPanel.Dock="Right" Background="Transparent"
+                        Foreground="#06B6D4" BorderThickness="0" Cursor="Hand"
+                        FontSize="12" Click="BtnRefreshLabs_Click"/>
+            </DockPanel>
+            <ComboBox x:Name="CmbLaboratorios"
+                      Background="#1E293B" Foreground="White" FontSize="14"
+                      Padding="12,10" BorderBrush="#334155" BorderThickness="1"
+                      DisplayMemberPath="DisplayName"/>
+        </StackPanel>
+
+        <!-- Botón Instalar -->
+        <Button x:Name="BtnInstalar" Grid.Row="4"
+                Content="🚀 Instalar y Configurar"
+                Style="{StaticResource BtnPrimary}"
+                Margin="0,8,0,16"
+                Click="BtnInstalar_Click"/>
+
+        <!-- Barra de progreso -->
+        <ProgressBar x:Name="ProgressBar" Grid.Row="5"
+                     Height="6" Margin="0,0,0,16"
+                     Background="#1E293B" Foreground="#06B6D4"
+                     BorderThickness="0" Minimum="0" Maximum="100"/>
+
+        <!-- Log de salida -->
+        <Border Grid.Row="6" Background="#1E293B" CornerRadius="10"
+                BorderBrush="#334155" BorderThickness="1" Padding="4">
+            <TextBox x:Name="TxtLog"
+                     Background="Transparent" Foreground="#CBD5E1"
+                     FontFamily="Cascadia Code, Consolas" FontSize="12"
+                     BorderThickness="0" IsReadOnly="True"
+                     TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                     Padding="12,8" CaretBrush="Transparent"/>
+        </Border>
+    </Grid>
+</Window>

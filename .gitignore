@@ -1,0 +1,7 @@
+
+.terraform/
+*.exe
+*.zip
+node_modules/
+venv/
+__pycache__/

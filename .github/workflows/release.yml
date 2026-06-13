@@ -1,0 +1,34 @@
+name: Generate Automatic Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger when pushing a tag matching v*, e.g., v1.0.0
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Automated release of Sysmon Telemetry System.
+            Features included:
+            - Terraform Infrastructure
+            - Python ETL Pipeline
+            - Next.js Dashboard
+          draft: false
+          prerelease: false

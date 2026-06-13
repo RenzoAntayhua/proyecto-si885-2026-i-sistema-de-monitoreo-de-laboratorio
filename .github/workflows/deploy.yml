@@ -1,0 +1,50 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Copy files to VPS via SCP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: sysmonadmin
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "."
+          target: "/home/sysmonadmin/proyecto-ti"
+          exclude: ".git,.github,node_modules,venv"
+
+      - name: Execute deployment script on VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: sysmonadmin
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/sysmonadmin/proyecto-ti
+            
+            # Setup Dashboard (Next.js)
+            cd dashboard
+            npm install
+            npm run build
+            pm2 restart dashboard || pm2 start npm --name "dashboard" -- start
+            
+            # Setup ETL & API (Python)
+            cd ../server
+            python3 -m venv venv
+            source venv/bin/activate
+            pip install -r requirements.txt
+            pm2 restart etl-worker || pm2 start app/etl/worker.py --name "etl-worker" --interpreter python3
+            pm2 restart fastapi || pm2 start uvicorn --name "fastapi" --interpreter python3 -- app.main:app --host 0.0.0.0 --port 8000
+            
+            # Save PM2 state
+            pm2 save
